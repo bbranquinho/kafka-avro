@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-class HybridSerializationApplication
+class HybridSerializationProducerApplication
 
 fun main(args: Array<String>) {
-    SpringApplication.run(HybridSerializationApplication::class.java, *args)
+    SpringApplication.run(HybridSerializationProducerApplication::class.java, *args)
 }

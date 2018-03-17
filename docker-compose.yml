@@ -1,40 +1,81 @@
-version: "2"
+version: '2'
 services:
   zookeeper:
-    image: confluent/zookeeper
+    image: 'zookeeper:3.4.9'
+    restart: unless-stopped
+    hostname: zookeeper
     ports:
-      - "2181:2181"
+      - '2181:2181'
     environment:
-      zk_id: "1"
-    network_mode: "host"
+      ZOO_MY_ID: 1
+      ZOO_PORT: 2181
+      ZOO_SERVERS: 'server.1=zookeeper:2888:3888'
   kafka:
-    image: confluent/kafka
+    image: 'confluentinc/cp-kafka:3.3.1'
+    hostname: kafka
+    ports:
+      - '9092:9092'
+    extra_hosts:
+      - 'kafka:127.0.0.1'
+      - 'localhost:127.0.0.1'
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:9092'
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG4J_LOGGERS: 'kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
     depends_on:
       - zookeeper
+  kafka-schema-registry:
+    image: 'confluentinc/cp-schema-registry:3.3.1'
+    hostname: kafka-schema-registry
+    restart: unless-stopped
     ports:
-      - "9092:9092"
+      - '8081:8081'
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: "confluent:2181"
-    network_mode: "host"
-  rest-proxy:
-    image: confluent/rest-proxy
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+      SCHEMA_REGISTRY_HOST_NAME: kafka-schema-registry
+      SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:8081'
     depends_on:
       - zookeeper
       - kafka
-      - schema-registry
+  schema-registry-ui:
+    image: 'landoop/schema-registry-ui:0.9.3'
+    hostname: kafka-schema-registry-ui
     ports:
-      - "8082:8082"
+      - '8001:8000'
     environment:
-      RP_ZOOKEEPER_CONNECT: "confluent:2181"
-      RP_SCHEMA_REGISTRY_URL: "http://confluent:8081"
-    network_mode: "host"
-  schema-registry:
-    image: confluent/schema-registry
+      SCHEMAREGISTRY_URL: 'http://kafka-schema-registry:8081/'
+      PROXY: 'true'
     depends_on:
-      - kafka
-      - zookeeper
+      - kafka-schema-registry
+  kafka-rest-proxy:
+    image: 'confluentinc/cp-kafka-rest:3.3.1'
+    hostname: kafka-rest-proxy
     ports:
-      - "8081:8081"
+      - '8082:8082'
     environment:
-      SR_KAFKASTORE_CONNECTION_URL: "confluent:2181"
-    network_mode: "host"
+      KAFKA_REST_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_REST_LISTENERS: 'http://0.0.0.0:8082/'
+      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://kafka-schema-registry:8081/'
+      KAFKA_REST_HOST_NAME: kafka-rest-proxy
+      KAFKA_REST_BOOTSTRAP_SERVERS: 'kafka:9092'
+    depends_on:
+      - zookeeper
+      - kafka
+      - kafka-schema-registry
+  kafka-topics-ui:
+    image: 'landoop/kafka-topics-ui:0.9.3'
+    hostname: kafka-topics-ui
+    ports:
+      - '8000:8000'
+    environment:
+      KAFKA_REST_PROXY_URL: 'http://kafka-rest-proxy:8082/'
+      PROXY: 'true'
+    depends_on:
+      - zookeeper
+      - kafka
+      - kafka-schema-registry
+      - kafka-rest-proxy
