@@ -1,0 +1,31 @@
+{
+  "namespace": "br.com.emersonborges",
+  "type": "record",
+  "name": "CustomerCreated",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "firstName",
+      "type": "string"
+    },
+    {
+      "name": "lastName",
+      "type": "string"
+    },
+    {
+      "name": "fullName",
+      "type": "string",
+      "default": "null"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      }
+    }
+  ]
+}

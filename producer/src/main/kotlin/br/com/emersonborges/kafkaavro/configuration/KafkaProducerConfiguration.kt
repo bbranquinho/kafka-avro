@@ -1,8 +1,8 @@
-package br.com.emersonborges.hybridserialization.configuration
+package br.com.emersonborges.kafkaavro.configuration
 
-import example.avro.User
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
+import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG
 import org.apache.kafka.common.serialization.StringSerializer
@@ -24,17 +24,17 @@ class KafkaProducerConfiguration {
     private lateinit var schemaRegistryUrl: String
 
     @Bean
-    fun producerFactory(): ProducerFactory<String, User> {
+    fun producerFactory(): ProducerFactory<String, GenericRecord> {
         val configProps = HashMap<String, Any>()
         configProps[BOOTSTRAP_SERVERS_CONFIG] = bootstrapAddress
         configProps[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
         configProps[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = KafkaAvroSerializer::class.java
         configProps[KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = schemaRegistryUrl
-        return DefaultKafkaProducerFactory<String, User>(configProps)
+        return DefaultKafkaProducerFactory<String, GenericRecord>(configProps)
     }
 
-    @Bean("avroKafkaTemplate")
-    fun kafkaTemplate(): KafkaTemplate<String, User> {
+    @Bean()
+    fun kafkaTemplate(): KafkaTemplate<String, GenericRecord> {
         return KafkaTemplate(producerFactory())
     }
 }

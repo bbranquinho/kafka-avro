@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>br.com.emersonborges</groupId>
-	<artifactId>hybrid-serialization</artifactId>
+	<artifactId>kafka-avro</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -55,6 +55,11 @@
                 <artifactId>kafka-avro-serializer</artifactId>
                 <version>4.0.0</version>
             </dependency>
+            <dependency>
+                <groupId>io.confluent</groupId>
+                <artifactId>kafka-streams-avro-serde</artifactId>
+                <version>4.0.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -93,7 +98,8 @@
                                 <goal>schema</goal>
                             </goals>
                             <configuration>
-                                <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
+                                <sourceDirectory>${project.basedir}/src/main/resources/avro/</sourceDirectory>
+                                <!--<stringType>String</stringType>-->
                             </configuration>
                         </execution>
                     </executions>

@@ -1,0 +1,38 @@
+{
+  "namespace": "br.com.emersonborges",
+  "type": "record",
+  "name": "CustomerAddressAdded",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "customerId",
+      "type": "string"
+    },
+    {
+      "name": "street",
+      "type": "string"
+    },
+    {
+      "name": "number",
+      "type": "string"
+    },
+    {
+      "name": "zipCode",
+      "type": "string"
+    },
+    {
+      "name": "city",
+      "type": "string"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      }
+    }
+  ]
+}
