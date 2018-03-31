@@ -13,8 +13,8 @@
         <module>consumer</module>
     </modules>
 
-	<name>hybrid-serialization</name>
-	<description>Demo project for Spring Boot</description>
+	<name>kafka-avro</name>
+	<description>Learning avro serialization with kafka and schema registry</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

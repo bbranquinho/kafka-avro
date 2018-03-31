@@ -28,14 +28,14 @@ class EventsController(
     @Value("classpath:avro/CustomerCreated_v2.avsc")
     lateinit var schemaCustomerCreatedV2: Resource
 
-    @Value("classpath:avro/CustomerAddressAdded_v1.avsc")
-    lateinit var schemaCustomerAddressAddedV1: Resource
-
     @Value("classpath:avro/CustomerCreated_v3.avsc")
     lateinit var schemaCustomerCreatedV3: Resource
 
     @Value("classpath:avro/CustomerCreated_v4.avsc")
     lateinit var schemaCustomerCreatedV4: Resource
+
+    @Value("classpath:avro/CustomerAddressAdded_v1.avsc")
+    lateinit var schemaCustomerAddressAddedV1: Resource
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = ["/v1/customers/events"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])

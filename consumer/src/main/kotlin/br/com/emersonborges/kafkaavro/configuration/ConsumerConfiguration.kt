@@ -6,6 +6,7 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
 import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -29,6 +30,11 @@ class ConsumerConfiguration {
     @Value("\${schema.registry.url}")
     private lateinit var schemaRegistryUrl: String
 
+    companion object {
+        const val CUSTOMER_CREATED_EVENT_TYPE = "CustomerCreated"
+        const val EVENT_TYPE_HEADER = "type"
+    }
+
     @Bean
     fun  specificConsumerFactory(): ConsumerFactory<String, CustomerCreated> {
         return buildConsumerFactory<CustomerCreated>(group = "group1")
@@ -43,10 +49,7 @@ class ConsumerConfiguration {
     fun specificKafkaListenerContainerFactory(specificConsumerFactory: ConsumerFactory<String, CustomerCreated>): ConcurrentKafkaListenerContainerFactory<String, CustomerCreated> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, CustomerCreated>()
         factory.consumerFactory = specificConsumerFactory
-        factory.setRecordFilterStrategy {
-            val type = it.headers().headers("type").first()
-            type.value().toString(Charset.defaultCharset()) != "CustomerCreated"
-        }
+        factory.setRecordFilterStrategy(::filter)
         return factory
     }
 
@@ -54,11 +57,13 @@ class ConsumerConfiguration {
     fun genericKafkaListenerContainerFactory(genericConsumerFactory: ConsumerFactory<String, GenericRecord>): ConcurrentKafkaListenerContainerFactory<String, GenericRecord> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, GenericRecord>()
         factory.consumerFactory = genericConsumerFactory
-        factory.setRecordFilterStrategy {
-            val type = it.headers().headers("type").first()
-            type.value().toString(Charset.defaultCharset()) != "CustomerCreated"
-        }
+        factory.setRecordFilterStrategy(::filter)
         return factory
+    }
+
+    private fun <T> filter(consumerRecord: ConsumerRecord<String, T>): Boolean {
+        val type = consumerRecord.headers().headers(EVENT_TYPE_HEADER).first()
+        return type.value().toString(Charset.defaultCharset()) != "CustomerCreated"
     }
 
     private fun <T> buildConsumerFactory(group: String = groupId, isSpecificRecord: Boolean = true): DefaultKafkaConsumerFactory<String, T> {
