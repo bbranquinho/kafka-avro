@@ -22,6 +22,11 @@ class EventsController(
     val kafkaTemplate: KafkaTemplate<String, GenericRecord>
 ) {
 
+    companion object {
+        const val CUSTOMER_CREATED_HEADER = "CustomerCreated"
+        const val CUSTOMER_ADDRESS_ADDED_HEADER = "CustomerAddressAdded"
+    }
+
     @Value("classpath:avro/CustomerCreated_v1.avsc")
     lateinit var schemaCustomerCreatedV1: Resource
 
@@ -40,31 +45,31 @@ class EventsController(
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = ["/v1/customers/events"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
     fun customerCreatedV1(@RequestBody event: String) {
-        kafkaTemplate.send(buildRecord(parseJson(schemaCustomerCreatedV1.file, event), "CustomerCreated"))
+        kafkaTemplate.send(buildRecord(parseJson(schemaCustomerCreatedV1.file, event), CUSTOMER_CREATED_HEADER))
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = ["/v1/customers/addresses/events"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
     fun customerUpdatedV1(@RequestBody event: String) {
-        kafkaTemplate.send(buildRecord(parseJson(schemaCustomerAddressAddedV1.file, event), "CustomerAddressAdded"))
+        kafkaTemplate.send(buildRecord(parseJson(schemaCustomerAddressAddedV1.file, event), CUSTOMER_ADDRESS_ADDED_HEADER))
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = ["/v2/customers/events"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
     fun customerCreatedV2(@RequestBody event: String) {
-        kafkaTemplate.send(buildRecord(parseJson(schemaCustomerCreatedV2.file, event), "CustomerCreated"))
+        kafkaTemplate.send(buildRecord(parseJson(schemaCustomerCreatedV2.file, event), CUSTOMER_CREATED_HEADER))
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = ["/v3/customers/events"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
     fun customerCreatedV3(@RequestBody event: String) {
-        kafkaTemplate.send(buildRecord(parseJson(schemaCustomerCreatedV3.file, event), "CustomerCreated"))
+        kafkaTemplate.send(buildRecord(parseJson(schemaCustomerCreatedV3.file, event), CUSTOMER_CREATED_HEADER))
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = ["/v4/customers/events"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
     fun customerCreatedV4(@RequestBody event: String) {
-        kafkaTemplate.send(buildRecord(parseJson(schemaCustomerCreatedV4.file, event), "CustomerCreated"))
+        kafkaTemplate.send(buildRecord(parseJson(schemaCustomerCreatedV4.file, event), CUSTOMER_CREATED_HEADER))
     }
 
     @Throws(IOException::class)

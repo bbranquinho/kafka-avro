@@ -63,7 +63,7 @@ class ConsumerConfiguration {
 
     private fun <T> filter(consumerRecord: ConsumerRecord<String, T>): Boolean {
         val type = consumerRecord.headers().headers(EVENT_TYPE_HEADER).first()
-        return type.value().toString(Charset.defaultCharset()) != "CustomerCreated"
+        return type.value().toString(Charset.defaultCharset()) != CUSTOMER_CREATED_EVENT_TYPE
     }
 
     private fun <T> buildConsumerFactory(group: String = groupId, isSpecificRecord: Boolean = true): DefaultKafkaConsumerFactory<String, T> {
