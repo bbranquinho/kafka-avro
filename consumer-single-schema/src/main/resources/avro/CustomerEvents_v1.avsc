@@ -1,0 +1,86 @@
+{
+  "namespace": "br.com.emersonborges",
+  "type": "record",
+  "name": "CustomerEvent",
+  "fields": [
+    {
+      "name": "header",
+      "type": {
+        "type": "record",
+        "name": "Header",
+        "fields": [
+          {
+            "name": "type",
+            "type": "string"
+          },
+          {
+            "name": "application",
+            "type": "string"
+          },
+          {
+            "name": "organization",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "payload",
+      "type": [
+        {
+          "type": "record",
+          "name": "CustomerCreated",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string"
+            },
+            {
+              "name": "firstName",
+              "type": "string"
+            },
+            {
+              "name": "lastName",
+              "type": "string"
+            },
+            {
+              "name": "fullName",
+              "type": "string",
+              "default": "null"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "CustomerAddressAdded",
+          "fields": [
+            {
+              "name": "id",
+              "type": "string"
+            },
+            {
+              "name": "customerId",
+              "type": "string"
+            },
+            {
+              "name": "street",
+              "type": "string"
+            },
+            {
+              "name": "number",
+              "type": "string"
+            },
+            {
+              "name": "zipCode",
+              "type": "string"
+            },
+            {
+              "name": "city",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

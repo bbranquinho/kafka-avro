@@ -1,12 +1,11 @@
 package br.com.emersonborges.kafkaavro.configuration
 
-import br.com.emersonborges.CustomerCreated
+import br.com.emersonborges.CustomerEvent
 import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
 import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -15,11 +14,10 @@ import org.springframework.kafka.annotation.EnableKafka
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.core.ConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
-import java.nio.charset.Charset
 
 @Configuration
 @EnableKafka
-class ConsumerConfiguration {
+class SingleSchemaConsumerConfiguration {
 
     @Value("\${spring.kafka.bootstrap-servers}")
     private lateinit var bootstrapAddress: String
@@ -36,34 +34,27 @@ class ConsumerConfiguration {
     }
 
     @Bean
-    fun  specificConsumerFactory(): ConsumerFactory<String, CustomerCreated> {
-        return buildConsumerFactory<CustomerCreated>(group = "group1")
-    }
-
-    @Bean
     fun  genericConsumerFactory(): ConsumerFactory<String, GenericRecord> {
         return buildConsumerFactory<GenericRecord>(group = "group2", isSpecificRecord = false)
     }
 
     @Bean
-    fun specificKafkaListenerContainerFactory(specificConsumerFactory: ConsumerFactory<String, CustomerCreated>): ConcurrentKafkaListenerContainerFactory<String, CustomerCreated> {
-        val factory = ConcurrentKafkaListenerContainerFactory<String, CustomerCreated>()
-        factory.consumerFactory = specificConsumerFactory
-        factory.setRecordFilterStrategy(::filter)
+    fun  specificConsumerFactory(): ConsumerFactory<String, CustomerEvent> {
+        return buildConsumerFactory<CustomerEvent>(group = "group3")
+    }
+
+    @Bean
+    fun specificKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, CustomerEvent> {
+        val factory = ConcurrentKafkaListenerContainerFactory<String, CustomerEvent>()
+        factory.consumerFactory = specificConsumerFactory()
         return factory
     }
 
     @Bean
-    fun genericKafkaListenerContainerFactory(genericConsumerFactory: ConsumerFactory<String, GenericRecord>): ConcurrentKafkaListenerContainerFactory<String, GenericRecord> {
+    fun genericKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, GenericRecord> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, GenericRecord>()
-        factory.consumerFactory = genericConsumerFactory
-        factory.setRecordFilterStrategy(::filter)
+        factory.consumerFactory = genericConsumerFactory()
         return factory
-    }
-
-    private fun <T> filter(consumerRecord: ConsumerRecord<String, T>): Boolean {
-        val type = consumerRecord.headers().headers(EVENT_TYPE_HEADER).first()
-        return type.value().toString(Charset.defaultCharset()) != CUSTOMER_CREATED_EVENT_TYPE
     }
 
     private fun <T> buildConsumerFactory(group: String = groupId, isSpecificRecord: Boolean = true): DefaultKafkaConsumerFactory<String, T> {

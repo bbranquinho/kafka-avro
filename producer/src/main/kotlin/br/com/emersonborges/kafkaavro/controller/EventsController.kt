@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController
 import java.io.IOException
 import java.io.InputStream
 
-
 @RestController
 class EventsController(
     val kafkaTemplate: KafkaTemplate<String, GenericRecord>
@@ -35,30 +34,36 @@ class EventsController(
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = ["/v1/customers/events"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun customerEventsV1(@RequestBody event: String) {
+        kafkaTemplate.send(buildRecord(parseJson(readSchema("CustomerEvents_v1"), event), CUSTOMER_CREATED_HEADER))
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = ["/v1/customers"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
     fun customerCreatedV1(@RequestBody event: String) {
         kafkaTemplate.send(buildRecord(parseJson(readSchema("CustomerCreated_v1"), event), CUSTOMER_CREATED_HEADER))
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = ["/v1/customers/addresses/events"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
+    @PostMapping(value = ["/v1/customers/addresses"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
     fun customerUpdatedV1(@RequestBody event: String) {
         kafkaTemplate.send(buildRecord(parseJson(readSchema("CustomerAddressAdded_v1"), event), CUSTOMER_ADDRESS_ADDED_HEADER))
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = ["/v2/customers/events"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
+    @PostMapping(value = ["/v2/customers"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
     fun customerCreatedV2(@RequestBody event: String) {
         kafkaTemplate.send(buildRecord(parseJson(readSchema("CustomerCreated_v2"), event), CUSTOMER_CREATED_HEADER))
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = ["/v3/customers/events"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
+    @PostMapping(value = ["/v3/customers"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
     fun customerCreatedV3(@RequestBody event: String) {
         kafkaTemplate.send(buildRecord(parseJson(readSchema("CustomerCreated_v3"), event), CUSTOMER_CREATED_HEADER))
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = ["/v4/customers/events"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
+    @PostMapping(value = ["/v4/customers"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
     fun customerCreatedV4(@RequestBody event: String) {
         kafkaTemplate.send(buildRecord(parseJson(readSchema("CustomerCreated_v4"), event), CUSTOMER_CREATED_HEADER))
     }

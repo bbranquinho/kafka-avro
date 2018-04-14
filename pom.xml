@@ -10,7 +10,8 @@
 
 	<modules>
         <module>producer</module>
-        <module>consumer</module>
+        <module>consumer-multiple-schemas</module>
+        <module>consumer-single-schema</module>
     </modules>
 
 	<name>kafka-avro</name>
@@ -41,7 +42,13 @@
             </dependency>
             <dependency>
                 <groupId>br.com.emersonborges</groupId>
-                <artifactId>consumer</artifactId>
+                <artifactId>consumer-multitple-schemas</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>br.com.emersonborges</groupId>
+                <artifactId>consumer-single-schema</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

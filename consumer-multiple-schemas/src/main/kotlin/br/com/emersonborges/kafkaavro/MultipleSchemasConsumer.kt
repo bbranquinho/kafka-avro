@@ -8,7 +8,7 @@ import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 
 @Component
-class Consumer {
+class MultipleSchemasConsumer {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
