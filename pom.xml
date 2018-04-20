@@ -12,6 +12,7 @@
         <module>producer-single-schema</module>
         <module>consumer-multiple-schemas</module>
         <module>consumer-single-schema</module>
+        <module>producer-multiple-schemas</module>
     </modules>
 
 	<name>kafka-avro</name>

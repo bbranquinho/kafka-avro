@@ -1,5 +1,6 @@
 package br.com.emersonborges.kafkaavro.configuration
 
+import br.com.emersonborges.CustomerAddressAdded
 import br.com.emersonborges.CustomerCreated
 import io.confluent.kafka.serializers.KafkaAvroDeserializer
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig
@@ -32,24 +33,38 @@ class MultipleSchemasConsumerConfiguration {
 
     companion object {
         const val CUSTOMER_CREATED_EVENT_TYPE = "CustomerCreated"
+        const val CUSTOMER_ADDRESS_ADDED_EVENT_TYPE = "CustomerAddressAdded"
         const val EVENT_TYPE_HEADER = "type"
     }
 
     @Bean
-    fun  specificConsumerFactory(): ConsumerFactory<String, CustomerCreated> {
+    fun  customerCreatedConsumerFactory(): ConsumerFactory<String, CustomerCreated> {
         return buildConsumerFactory<CustomerCreated>(group = "group1")
     }
 
     @Bean
-    fun  genericConsumerFactory(): ConsumerFactory<String, GenericRecord> {
-        return buildConsumerFactory<GenericRecord>(group = "group2", isSpecificRecord = false)
+    fun  customerAddressAddedConsumerFactory(): ConsumerFactory<String, CustomerAddressAdded> {
+        return buildConsumerFactory<CustomerAddressAdded>(group = "group2")
     }
 
     @Bean
-    fun specificKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, CustomerCreated> {
+    fun  genericConsumerFactory(): ConsumerFactory<String, GenericRecord> {
+        return buildConsumerFactory<GenericRecord>(group = "group3", isSpecificRecord = false)
+    }
+
+    @Bean
+    fun customerCreatedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, CustomerCreated> {
         val factory = ConcurrentKafkaListenerContainerFactory<String, CustomerCreated>()
-        factory.consumerFactory = specificConsumerFactory()
-        factory.setRecordFilterStrategy(::filter)
+        factory.consumerFactory = customerCreatedConsumerFactory()
+        factory.setRecordFilterStrategy(::filterCustomerCreated)
+        return factory
+    }
+
+    @Bean
+    fun customerAddressAddedKafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, CustomerAddressAdded> {
+        val factory = ConcurrentKafkaListenerContainerFactory<String, CustomerAddressAdded>()
+        factory.consumerFactory = customerAddressAddedConsumerFactory()
+        factory.setRecordFilterStrategy(::filterCustomerAddressAdded)
         return factory
     }
 
@@ -60,9 +75,16 @@ class MultipleSchemasConsumerConfiguration {
         return factory
     }
 
-    private fun <T> filter(consumerRecord: ConsumerRecord<String, T>): Boolean {
-        val type = consumerRecord.headers().headers(EVENT_TYPE_HEADER).first()
-        return type.value().toString(Charset.defaultCharset()) != CUSTOMER_CREATED_EVENT_TYPE
+    private fun <T> filterCustomerCreated(consumerRecord: ConsumerRecord<String, T>): Boolean {
+        return getEventType(consumerRecord) != CUSTOMER_CREATED_EVENT_TYPE
+    }
+
+    private fun <T> filterCustomerAddressAdded(consumerRecord: ConsumerRecord<String, T>): Boolean {
+        return getEventType(consumerRecord) != CUSTOMER_ADDRESS_ADDED_EVENT_TYPE
+    }
+
+    private fun getEventType(record: ConsumerRecord<String, *>): String {
+        return record.headers().headers(EVENT_TYPE_HEADER).first().value().toString(Charset.defaultCharset())
     }
 
     private fun <T> buildConsumerFactory(group: String = groupId, isSpecificRecord: Boolean = true): DefaultKafkaConsumerFactory<String, T> {

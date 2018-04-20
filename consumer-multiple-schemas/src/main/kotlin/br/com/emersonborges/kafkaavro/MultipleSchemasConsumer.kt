@@ -1,5 +1,6 @@
 package br.com.emersonborges.kafkaavro
 
+import br.com.emersonborges.CustomerAddressAdded
 import br.com.emersonborges.CustomerCreated
 import org.apache.avro.generic.GenericRecord
 import org.slf4j.Logger
@@ -12,11 +13,18 @@ class MultipleSchemasConsumer {
 
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
-    @KafkaListener(topics = ["customer"], containerFactory = "specificKafkaListenerContainerFactory")
-    fun specificConsumer(event: CustomerCreated) {
-        logger.info("SPECIFIC RECORD")
+    @KafkaListener(topics = ["customer"], containerFactory = "customerCreatedKafkaListenerContainerFactory")
+    fun customerCreatedConsumer(event: CustomerCreated) {
+        logger.info("CUSTOMER CREATED RECORD")
         logger.info("Event: $event")
         logger.info("Event customer fullName: ${event.getFullName()}")
+    }
+
+    @KafkaListener(topics = ["customer"], containerFactory = "customerAddressAddedKafkaListenerContainerFactory")
+    fun customerAddressAddedConsumer(event: CustomerAddressAdded) {
+        logger.info("CUSTOMER ADDRESS ADDED RECORD")
+        logger.info("Event: $event")
+        logger.info("Event customer address street: ${event.getStreet()}")
     }
 
     @KafkaListener(topics = ["customer"], containerFactory = "genericKafkaListenerContainerFactory")
