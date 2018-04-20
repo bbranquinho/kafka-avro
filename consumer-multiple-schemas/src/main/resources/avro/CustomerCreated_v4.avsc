@@ -1,0 +1,27 @@
+{
+  "namespace": "br.com.poc",
+  "type": "record",
+  "name": "CustomerCreated",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "firstName",
+      "type": "string"
+    },
+    {
+      "name": "middleName",
+      "type": "string",
+      "default": "null"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      }
+    }
+  ]
+}
