@@ -9,7 +9,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
-        <module>producer</module>
+        <module>producer-single-schema</module>
         <module>consumer-multiple-schemas</module>
         <module>consumer-single-schema</module>
     </modules>
@@ -60,12 +60,12 @@
             <dependency>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-avro-serializer</artifactId>
-                <version>4.0.0</version>
+                <version>4.1.0</version>
             </dependency>
             <dependency>
                 <groupId>io.confluent</groupId>
                 <artifactId>kafka-streams-avro-serde</artifactId>
-                <version>4.0.0</version>
+                <version>4.1.0</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
             <dependency>

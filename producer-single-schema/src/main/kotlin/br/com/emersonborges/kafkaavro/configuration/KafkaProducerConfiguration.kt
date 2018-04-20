@@ -2,6 +2,7 @@ package br.com.emersonborges.kafkaavro.configuration
 
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
+import io.confluent.kafka.serializers.subject.TopicNameStrategy
 import org.apache.avro.generic.GenericRecord
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG
@@ -30,6 +31,7 @@ class KafkaProducerConfiguration {
         configProps[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
         configProps[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = KafkaAvroSerializer::class.java
         configProps[KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG] = schemaRegistryUrl
+        configProps[KafkaAvroSerializerConfig.VALUE_SUBJECT_NAME_STRATEGY] = TopicNameStrategy::class.java
         return DefaultKafkaProducerFactory<String, GenericRecord>(configProps)
     }
 
