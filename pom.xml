@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>br.com.emersonborges</groupId>
+	<groupId>br.com.poc</groupId>
 	<artifactId>kafka-avro</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -37,18 +37,18 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>br.com.emersonborges</groupId>
+                <groupId>br.com.poc</groupId>
                 <artifactId>producer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>br.com.emersonborges</groupId>
+                <groupId>br.com.poc</groupId>
                 <artifactId>consumer-multitple-schemas</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>br.com.emersonborges</groupId>
+                <groupId>br.com.poc</groupId>
                 <artifactId>consumer-single-schema</artifactId>
                 <version>${project.version}</version>
             </dependency>

@@ -1,5 +1,5 @@
 {
-  "namespace": "br.com.emersonborges",
+  "namespace": "br.com.poc",
   "type": "record",
   "name": "CustomerEvent",
   "fields": [
