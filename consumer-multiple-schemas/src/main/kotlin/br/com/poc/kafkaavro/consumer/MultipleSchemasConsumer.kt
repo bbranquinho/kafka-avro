@@ -1,4 +1,4 @@
-package br.com.poc.kafkaavro
+package br.com.poc.kafkaavro.consumer
 
 import br.com.poc.CustomerAddressAdded
 import br.com.poc.CustomerCreated
