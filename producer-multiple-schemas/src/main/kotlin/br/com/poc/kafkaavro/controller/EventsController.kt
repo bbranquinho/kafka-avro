@@ -27,6 +27,7 @@ class EventsController(
     companion object {
         const val CUSTOMER_CREATED_HEADER = "CustomerCreated"
         const val CUSTOMER_ADDRESS_ADDED_HEADER = "CustomerAddressAdded"
+        const val CUSTOMER_CONTACT_ADDED_HEADER = "CustomerContactAdded"
     }
 
     @Autowired
@@ -40,8 +41,14 @@ class EventsController(
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = ["/v1/customers/addresses"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
-    fun customerUpdatedV1(@RequestBody event: String) {
+    fun customerAddressAddedV1(@RequestBody event: String) {
         kafkaTemplate.send(buildRecord(parseJson(readSchema("CustomerAddressAdded_v1"), event), CUSTOMER_ADDRESS_ADDED_HEADER))
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = ["/v1/customers/contacts"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
+    fun customerContactAddedV1(@RequestBody event: String) {
+        kafkaTemplate.send(buildRecord(parseJson(readSchema("CustomerContactAdded_v1"), event), CUSTOMER_CONTACT_ADDED_HEADER))
     }
 
     @ResponseStatus(HttpStatus.CREATED)

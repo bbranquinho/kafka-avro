@@ -1,0 +1,26 @@
+{
+  "namespace": "br.com.poc",
+  "type": "record",
+  "name": "CustomerContactEmailAdded",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "customerId",
+      "type": "string"
+    },
+    {
+      "name": "email",
+      "type": "string"
+    },
+    {
+      "name": "metadata",
+      "type": {
+        "type": "map",
+        "values": "string"
+      }
+    }
+  ]
+}
