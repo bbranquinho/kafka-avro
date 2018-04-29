@@ -47,8 +47,8 @@ class EventsController(
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = ["/v1/customers/contacts"], consumes = [(MediaType.APPLICATION_JSON_VALUE)])
-    fun customerContactAddedV1(@RequestBody event: String) {
-        kafkaTemplate.send(buildRecord(parseJson(readSchema("CustomerContactAdded_v1"), event), CUSTOMER_CONTACT_ADDED_HEADER))
+    fun customerContactEmailAddedV1(@RequestBody event: String) {
+        kafkaTemplate.send(buildRecord(parseJson(readSchema("CustomerContactEmailAdded_v1"), event), CUSTOMER_CONTACT_ADDED_HEADER))
     }
 
     @ResponseStatus(HttpStatus.CREATED)
